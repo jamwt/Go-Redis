@@ -132,6 +132,9 @@ type Client interface {
 	// Redis TTL command.
 	Ttl (key string) (result int64, err Error);
 
+	// Redis PUBLISH command.
+	Publish (key string, arg1 []byte) (result int64, err Error);
+
 	// Redis RPUSH command.
 	Rpush (key string, arg1 []byte) (Error);
 
@@ -161,6 +164,12 @@ type Client interface {
 
 	// Redis RPOP command.
 	Rpop (key string) (result []byte, err Error);
+
+	// Redis BLPOP command.
+	Blpop (keys []string, timeout int64) (key string, result []byte, err Error);
+
+	// Redis BRPOP command.
+	Brpop (keys []string, timeout int64) (key string, result []byte, err Error);
 
 	// Redis RPOPLPUSH command.
 	Rpoplpush (key string, arg1 string) (result []byte, err Error);

@@ -129,6 +129,7 @@ var (
  	DBSIZE			Command = Command {"DBSIZE", NO_ARG, 	NUMBER};
  	EXPIRE			Command = Command {"EXPIRE", KEY_NUM, 	BOOLEAN};
  	TTL				Command = Command {"TTL", KEY, 	NUMBER};
+ 	PUBLISH	  	    Command = Command {"PUBLISH", KEY_VALUE, NUMBER};
  	RPUSH			Command = Command {"RPUSH", KEY_VALUE, 	STATUS};
  	LPUSH			Command = Command {"LPUSH", KEY_VALUE, 	STATUS};
  	LLEN			Command = Command {"LLEN", KEY, 	NUMBER};
@@ -139,6 +140,8 @@ var (
  	LREM			Command = Command {"LREM", KEY_CNT_VALUE, 	NUMBER};
  	LPOP			Command = Command {"LPOP", KEY, 	BULK};
  	RPOP			Command = Command {"RPOP", KEY, 	BULK};
+ 	BLPOP			Command = Command {"BLPOP", MULTI_KEY, 	MULTI_BULK};
+ 	BRPOP			Command = Command {"BRPOP", MULTI_KEY, 	MULTI_BULK};
  	RPOPLPUSH		Command = Command {"RPOPLPUSH", KEY_VALUE, 	BULK};
  	SADD			Command = Command {"SADD", KEY_VALUE, 	BOOLEAN};
  	SREM			Command = Command {"SREM", KEY_VALUE, 	BOOLEAN};

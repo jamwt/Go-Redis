@@ -394,6 +394,18 @@ func (c *syncClient) Ttl(arg0 string) (result int64, err Error) {
 
 }
 
+// Redis PUBLISH command.
+func (c *syncClient) Publish (key string, arg1 []byte) (result int64, err Error) {
+	arg0bytes := []byte(key)
+
+	var resp Response
+	resp, err = c.conn.ServiceRequest(&PUBLISH, [][]byte{arg0bytes, arg1})
+	if err == nil {
+		result = resp.GetNumberValue()
+	}
+	return result, err
+}
+
 // Redis RPUSH command.
 func (c *syncClient) Rpush(arg0 string, arg1 []byte) (err Error) {
 	arg0bytes := []byte(arg0)
@@ -514,6 +526,42 @@ func (c *syncClient) Rpop(arg0 string) (result []byte, err Error) {
 	}
 	return result, err
 
+}
+
+// Blocking pop helper
+func (c *syncClient) bxpop (keys []string, timeout int64, cmd *Command) (key string, result []byte, err Error) {
+    byteargs := make([][]byte, len(keys) + 1)
+    for i, k := range keys {
+        byteargs[i] = []byte(k)
+    }
+    byteargs[len(keys)] = []byte(fmt.Sprintf("%d", timeout))
+
+    empty := []byte("")
+
+	var resp Response
+	resp, err = c.conn.ServiceRequest(cmd, byteargs)
+	if err == nil {
+		res := resp.GetMultiBulkData()
+        if len(res) == 0 {
+            return "", empty, nil // timeout
+        }
+
+        key := string(res[0])
+        value := res[1]
+        
+        return key, value, nil
+	}
+	return "", empty, err
+}
+
+// Redis BLPOP command.
+func (c *syncClient) Blpop (keys []string, timeout int64) (key string, result []byte, err Error) {
+    return c.bxpop(keys, timeout, &BLPOP)
+}
+
+// Redis BRPOP command.
+func (c *syncClient) Brpop (keys []string, timeout int64) (key string, result []byte, err Error) {
+    return c.bxpop(keys, timeout, &BRPOP)
 }
 
 // Redis RPOPLPUSH command.
